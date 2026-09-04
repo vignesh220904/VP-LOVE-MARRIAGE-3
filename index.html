@@ -406,55 +406,128 @@
     </section>
 
     <!-- ==========================================
-         SECTION 8: PHOTO GALLERY & LIGHTBOX (ALL 6 ASSETS)
+         SECTION 8: LUXURY BUTTERFLY PHOTO SLIDER & LIGHTBOX
          ========================================== -->
     <section id="gallery" class="invitation-section section-gallery reveal-on-scroll">
       <div class="section-badge">MEMORIES OF LOVE</div>
       <h2 class="section-title">Cherished Moments</h2>
-      <p class="section-intro">Every smile, glance, and step leading us to this blessed union</p>
+      <p class="section-intro">Swipe to experience our journey • Adorned with golden butterflies</p>
 
-      <div class="gallery-grid" id="gallery-grid">
+      <!-- Golden Butterfly Interactive Slider Component -->
+      <div class="butterfly-slider-wrap" id="butterfly-slider-wrap">
         
-        <div class="gallery-item" data-index="0" role="button" tabindex="0" aria-label="View photo 1 in lightbox">
-          <img src="assets/VP9.png" alt="Vikki & Pappu - Portrait 1" loading="lazy">
-          <div class="gallery-item-overlay">
-            <span class="overlay-plus">+</span>
+        <!-- Animated Golden Fluttering Butterflies Container -->
+        <div class="butterfly-flight-stage" id="butterfly-flight-stage" aria-hidden="true"></div>
+
+        <!-- 3D Carousel Stage -->
+        <div class="slider-stage-3d" id="slider-stage-3d">
+          
+          <div class="slide-card" data-index="0">
+            <div class="slide-card-inner">
+              <div class="slide-arch-frame">
+                <img src="assets/VP9.png" alt="Vikki & Pappu - Portrait 1" loading="lazy">
+                <div class="slide-gold-sheen"></div>
+              </div>
+              <div class="slide-caption">
+                <span class="slide-num">01 / 06</span>
+                <span class="slide-title">Eternal Promise</span>
+              </div>
+            </div>
           </div>
+
+          <div class="slide-card" data-index="1">
+            <div class="slide-card-inner">
+              <div class="slide-arch-frame">
+                <img src="assets/VP10.png" alt="Vikki & Pappu - Portrait 2" loading="lazy">
+                <div class="slide-gold-sheen"></div>
+              </div>
+              <div class="slide-caption">
+                <span class="slide-num">02 / 06</span>
+                <span class="slide-title">Sacred Bond</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-card" data-index="2">
+            <div class="slide-card-inner">
+              <div class="slide-arch-frame">
+                <img src="assets/VP1.png" alt="Vikki & Pappu - Portrait 3" loading="lazy">
+                <div class="slide-gold-sheen"></div>
+              </div>
+              <div class="slide-caption">
+                <span class="slide-num">03 / 06</span>
+                <span class="slide-title">Joy & Laughter</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-card" data-index="3">
+            <div class="slide-card-inner">
+              <div class="slide-arch-frame">
+                <img src="assets/VP2.png" alt="Vikki & Pappu - Portrait 4" loading="lazy">
+                <div class="slide-gold-sheen"></div>
+              </div>
+              <div class="slide-caption">
+                <span class="slide-num">04 / 06</span>
+                <span class="slide-title">United in Grace</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-card" data-index="4">
+            <div class="slide-card-inner">
+              <div class="slide-arch-frame">
+                <img src="assets/VP3.png" alt="Vikki & Pappu - Portrait 5" loading="lazy">
+                <div class="slide-gold-sheen"></div>
+              </div>
+              <div class="slide-caption">
+                <span class="slide-num">05 / 06</span>
+                <span class="slide-title">Soul's Companion</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="slide-card" data-index="5">
+            <div class="slide-card-inner">
+              <div class="slide-arch-frame">
+                <img src="assets/VP4.png" alt="Vikki & Pappu - Portrait 6" loading="lazy">
+                <div class="slide-gold-sheen"></div>
+              </div>
+              <div class="slide-caption">
+                <span class="slide-num">06 / 06</span>
+                <span class="slide-title">Forever & Always</span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <div class="gallery-item" data-index="1" role="button" tabindex="0" aria-label="View photo 2 in lightbox">
-          <img src="assets/VP10.png" alt="Vikki & Pappu - Portrait 2" loading="lazy">
-          <div class="gallery-item-overlay">
-            <span class="overlay-plus">+</span>
-          </div>
+        <!-- Slider Controls & Navigation -->
+        <div class="slider-controls">
+          <button class="slider-nav-btn slider-prev" id="slider-prev-btn" aria-label="Previous Photo">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <!-- Slide Dots Indicator -->
+          <div class="slider-dots" id="slider-dots"></div>
+
+          <button class="slider-nav-btn slider-next" id="slider-next-btn" aria-label="Next Photo">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
 
-        <div class="gallery-item" data-index="2" role="button" tabindex="0" aria-label="View photo 3 in lightbox">
-          <img src="assets/VP1.png" alt="Vikki & Pappu - Portrait 3" loading="lazy">
-          <div class="gallery-item-overlay">
-            <span class="overlay-plus">+</span>
-          </div>
-        </div>
-
-        <div class="gallery-item" data-index="3" role="button" tabindex="0" aria-label="View photo 4 in lightbox">
-          <img src="assets/VP2.png" alt="Vikki & Pappu - Portrait 4" loading="lazy">
-          <div class="gallery-item-overlay">
-            <span class="overlay-plus">+</span>
-          </div>
-        </div>
-
-        <div class="gallery-item" data-index="4" role="button" tabindex="0" aria-label="View photo 5 in lightbox">
-          <img src="assets/VP3.png" alt="Vikki & Pappu - Portrait 5" loading="lazy">
-          <div class="gallery-item-overlay">
-            <span class="overlay-plus">+</span>
-          </div>
-        </div>
-
-        <div class="gallery-item" data-index="5" role="button" tabindex="0" aria-label="View photo 6 in lightbox">
-          <img src="assets/VP4.png" alt="Vikki & Pappu - Portrait 6" loading="lazy">
-          <div class="gallery-item-overlay">
-            <span class="overlay-plus">+</span>
-          </div>
+        <!-- Touch Swipe Prompt & Fullscreen Action -->
+        <div class="slider-footer-action">
+          <button class="btn btn-secondary btn-sm" id="btn-open-lightbox">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+            </svg>
+            <span>TAP FOR FULLSCREEN VIEW</span>
+          </button>
         </div>
 
       </div>

@@ -2,6 +2,7 @@
  * =========================================================================
  * LUXURY IVORY WAX SEAL WEDDING INVITATION - INTERACTIVE LOGIC
  * Holy Matrimony: Vikki & Pappu
+ * Features: 3D Butterfly Slider & Romantic Background Music Engine
  * =========================================================================
  */
 
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initDateRevealCanvas();
   initCountdown();
   initScrollAnimations();
+  initButterflySlider();
   initGalleryLightbox();
   initNavigation();
   initAudioPlayer();
@@ -115,6 +117,9 @@ function initEnvelopeExperience() {
 
     document.body.classList.add("opening");
 
+    // Start background music
+    startWeddingMusic();
+
     // Play video if accessible
     if (openingVideo) {
       openingVideo.currentTime = 0;
@@ -124,12 +129,6 @@ function initEnvelopeExperience() {
           console.log("Direct video playback fallback active");
         });
       }
-    }
-
-    // Attempt background music playback on user interaction
-    const audio = document.getElementById("bg-audio");
-    if (audio) {
-      audio.play().catch(() => {});
     }
 
     // Dynamic duration based on video duration or fallback
@@ -339,10 +338,181 @@ function initScrollAnimations() {
 }
 
 // ==========================================
-// SECTION 8: PHOTO GALLERY & LIGHTBOX (6 PHOTOS)
+// SECTION 8: 3D BUTTERFLY PHOTO SLIDER
 // ==========================================
+let currentSlideIndex = 0;
+const slides = [];
+
+function initButterflySlider() {
+  const cards = document.querySelectorAll(".slide-card");
+  const dotsContainer = document.getElementById("slider-dots");
+  const prevBtn = document.getElementById("slider-prev-btn");
+  const nextBtn = document.getElementById("slider-next-btn");
+  const sliderStage = document.getElementById("slider-stage-3d");
+  const flightStage = document.getElementById("butterfly-flight-stage");
+  const openLightboxBtn = document.getElementById("btn-open-lightbox");
+
+  if (cards.length === 0) return;
+
+  cards.forEach((card, i) => {
+    slides.push(card);
+    
+    // Create dot
+    if (dotsContainer) {
+      const dot = document.createElement("span");
+      dot.className = `slider-dot ${i === 0 ? "active" : ""}`;
+      dot.setAttribute("aria-label", `Go to slide ${i + 1}`);
+      dot.addEventListener("click", () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+
+    // Card click event
+    card.addEventListener("click", () => {
+      const cardIndex = parseInt(card.dataset.index, 10);
+      if (cardIndex === currentSlideIndex) {
+        // Open fullscreen lightbox if active card is clicked
+        if (typeof openLightboxModal === "function") {
+          openLightboxModal(cardIndex);
+        }
+      } else {
+        goToSlide(cardIndex);
+      }
+    });
+  });
+
+  function updateSlidePositions(direction = "next") {
+    const total = slides.length;
+    const dots = document.querySelectorAll(".slider-dot");
+
+    slides.forEach((card, i) => {
+      card.classList.remove("active", "prev", "next", "hidden");
+      
+      const prevIdx = (currentSlideIndex - 1 + total) % total;
+      const nextIdx = (currentSlideIndex + 1) % total;
+
+      if (i === currentSlideIndex) {
+        card.classList.add("active");
+      } else if (i === prevIdx) {
+        card.classList.add("prev");
+      } else if (i === nextIdx) {
+        card.classList.add("next");
+      } else {
+        card.classList.add("hidden");
+      }
+    });
+
+    // Update dots
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("active", i === currentSlideIndex);
+    });
+
+    // Trigger golden butterfly flight animation
+    spawnGoldenButterflies(flightStage, direction);
+  }
+
+  function goToSlide(index, direction) {
+    if (index === currentSlideIndex) return;
+    const dir = direction || (index > currentSlideIndex ? "next" : "prev");
+    currentSlideIndex = (index + slides.length) % slides.length;
+    updateSlidePositions(dir);
+  }
+
+  function nextSlide() {
+    goToSlide(currentSlideIndex + 1, "next");
+  }
+
+  function prevSlide() {
+    goToSlide(currentSlideIndex - 1, "prev");
+  }
+
+  if (prevBtn) prevBtn.addEventListener("click", prevSlide);
+  if (nextBtn) nextBtn.addEventListener("click", nextSlide);
+
+  if (openLightboxBtn) {
+    openLightboxBtn.addEventListener("click", () => {
+      if (typeof openLightboxModal === "function") {
+        openLightboxModal(currentSlideIndex);
+      }
+    });
+  }
+
+  // Touch & Swipe gestures
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  if (sliderStage) {
+    sliderStage.addEventListener("touchstart", (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    sliderStage.addEventListener("touchend", (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+        if (diffX < 0) {
+          nextSlide(); // Swipe left -> next
+        } else {
+          prevSlide(); // Swipe right -> prev
+        }
+      }
+    }, { passive: true });
+  }
+
+  // Initial render
+  updateSlidePositions();
+}
+
+/**
+ * Spawns fluttering golden butterflies that fly across the stage
+ */
+function spawnGoldenButterflies(container, direction = "next") {
+  if (!container) return;
+
+  const count = 5;
+  for (let i = 0; i < count; i++) {
+    const butterfly = document.createElement("div");
+    butterfly.className = "gold-butterfly";
+
+    // Golden wings
+    const leftWing = document.createElement("div");
+    leftWing.className = "butterfly-wing butterfly-wing-left";
+    const rightWing = document.createElement("div");
+    rightWing.className = "butterfly-wing butterfly-wing-right";
+
+    butterfly.appendChild(leftWing);
+    butterfly.appendChild(rightWing);
+
+    // Random positioning & flight vectors
+    const startX = 20 + Math.random() * 60; // 20% to 80% width
+    const startY = 50 + Math.random() * 40; // 50% to 90% height
+    const dx = (direction === "next" ? 1 : -1) * (40 + Math.random() * 90);
+    const rot = (Math.random() - 0.5) * 50;
+
+    butterfly.style.left = `${startX}%`;
+    butterfly.style.top = `${startY}%`;
+    butterfly.style.setProperty("--dx", `${dx}px`);
+    butterfly.style.setProperty("--rot", `${rot}deg`);
+    butterfly.style.animationDelay = `${i * 0.12}s`;
+
+    container.appendChild(butterfly);
+
+    // Remove after animation finishes
+    setTimeout(() => {
+      butterfly.remove();
+    }, 3200);
+  }
+}
+
+// ==========================================
+// LIGHTBOX MODAL
+// ==========================================
+let openLightboxModal = null;
+
 function initGalleryLightbox() {
-  const galleryItems = document.querySelectorAll(".gallery-item");
   const lightbox = document.getElementById("lightbox-modal");
   const lightboxImg = document.getElementById("lightbox-img");
   const lightboxCaption = document.getElementById("lightbox-caption");
@@ -350,34 +520,31 @@ function initGalleryLightbox() {
   const prevBtn = document.getElementById("lightbox-prev");
   const nextBtn = document.getElementById("lightbox-next");
 
-  if (!lightbox || galleryItems.length === 0) return;
+  if (!lightbox) return;
 
-  const photos = Array.from(galleryItems).map((item) => {
-    const img = item.querySelector("img");
-    return {
-      src: img ? img.src : "",
-      alt: img ? img.alt : ""
-    };
-  });
+  const photos = Array.from(document.querySelectorAll(".slide-card img")).map((img, i) => ({
+    src: img.src,
+    alt: img.alt || `Photo ${i + 1}`
+  }));
 
-  let currentIndex = 0;
+  let lightboxIndex = 0;
 
   function showPhoto(index) {
     if (index < 0) index = photos.length - 1;
     if (index >= photos.length) index = 0;
-    currentIndex = index;
+    lightboxIndex = index;
 
-    lightboxImg.src = photos[currentIndex].src;
-    lightboxImg.alt = photos[currentIndex].alt;
-    lightboxCaption.textContent = `Photo ${currentIndex + 1} of ${photos.length}`;
+    lightboxImg.src = photos[lightboxIndex].src;
+    lightboxImg.alt = photos[lightboxIndex].alt;
+    lightboxCaption.textContent = `Photo ${lightboxIndex + 1} of ${photos.length} • Vikki & Pappu`;
   }
 
-  function openLightbox(index) {
+  openLightboxModal = function(index) {
     showPhoto(index);
     lightbox.classList.add("active");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
-  }
+  };
 
   function closeLightbox() {
     lightbox.classList.remove("active");
@@ -385,46 +552,20 @@ function initGalleryLightbox() {
     document.body.style.overflow = "";
   }
 
-  galleryItems.forEach((item, index) => {
-    item.addEventListener("click", () => openLightbox(index));
-    item.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        openLightbox(index);
-      }
-    });
-  });
-
   if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
-  if (prevBtn) prevBtn.addEventListener("click", () => showPhoto(currentIndex - 1));
-  if (nextBtn) nextBtn.addEventListener("click", () => showPhoto(currentIndex + 1));
+  if (prevBtn) prevBtn.addEventListener("click", () => showPhoto(lightboxIndex - 1));
+  if (nextBtn) nextBtn.addEventListener("click", () => showPhoto(lightboxIndex + 1));
 
   lightbox.addEventListener("click", (e) => {
     if (e.target === lightbox) closeLightbox();
   });
 
-  // Keyboard controls
   window.addEventListener("keydown", (e) => {
     if (!lightbox.classList.contains("active")) return;
     if (e.key === "Escape") closeLightbox();
-    if (e.key === "ArrowLeft") showPhoto(currentIndex - 1);
-    if (e.key === "ArrowRight") showPhoto(currentIndex + 1);
+    if (e.key === "ArrowLeft") showPhoto(lightboxIndex - 1);
+    if (e.key === "ArrowRight") showPhoto(lightboxIndex + 1);
   });
-
-  // Mobile swipe support
-  let touchStartX = 0;
-  lightbox.addEventListener("touchstart", (e) => {
-    touchStartX = e.touches[0].clientX;
-  }, { passive: true });
-
-  lightbox.addEventListener("touchend", (e) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = touchEndX - touchStartX;
-    if (Math.abs(diff) > 45) {
-      if (diff > 0) showPhoto(currentIndex - 1); // Swipe right
-      else showPhoto(currentIndex + 1); // Swipe left
-    }
-  }, { passive: true });
 }
 
 // ==========================================
@@ -462,26 +603,133 @@ function initNavigation() {
 }
 
 // ==========================================
-// AUDIO PLAYER CONTROLLER
+// ROMANTIC WEDDING BACKGROUND MUSIC ENGINE
 // ==========================================
-function initAudioPlayer() {
-  const audio = document.getElementById("bg-audio");
-  const audioBtn = document.getElementById("audio-toggle-btn");
+let audioContext = null;
+let musicInterval = null;
+let isMusicPlaying = false;
 
-  if (!audio || !audioBtn) return;
+function initAudioPlayer() {
+  const audioBtn = document.getElementById("audio-toggle-btn");
+  if (!audioBtn) return;
 
   audioBtn.addEventListener("click", () => {
-    if (audio.paused) {
-      audio.play().then(() => {
-        audioBtn.classList.remove("muted");
-      }).catch((err) => {
-        console.log("Audio play error:", err);
-      });
-    } else {
-      audio.pause();
+    if (isMusicPlaying) {
+      pauseWeddingMusic();
       audioBtn.classList.add("muted");
+    } else {
+      startWeddingMusic();
+      audioBtn.classList.remove("muted");
     }
   });
+}
+
+function startWeddingMusic() {
+  if (isMusicPlaying) return;
+  isMusicPlaying = true;
+
+  const audioBtn = document.getElementById("audio-toggle-btn");
+  if (audioBtn) audioBtn.classList.remove("muted");
+
+  // Also try HTML5 audio if audio source exists
+  const audioEl = document.getElementById("bg-audio");
+  if (audioEl) {
+    audioEl.play().catch(() => {});
+  }
+
+  // Web Audio API Polyphonic Romantic Melody Synthesizer
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    if (!audioContext) {
+      audioContext = new AudioCtx();
+    }
+    if (audioContext.state === "suspended") {
+      audioContext.resume();
+    }
+
+    playWeddingHarpSequence();
+  } catch (err) {
+    console.log("Web audio init notice:", err);
+  }
+}
+
+function pauseWeddingMusic() {
+  isMusicPlaying = false;
+  const audioEl = document.getElementById("bg-audio");
+  if (audioEl) {
+    audioEl.pause();
+  }
+  if (musicInterval) {
+    clearInterval(musicInterval);
+    musicInterval = null;
+  }
+}
+
+/**
+ * Generates an ethereal, romantic wedding harp & piano progression
+ */
+function playWeddingHarpSequence() {
+  if (!audioContext || !isMusicPlaying) return;
+
+  // Romantic Wedding Chord Arpeggios (Cmaj9, Am9, Fmaj9, Gsus4)
+  const progressions = [
+    [261.63, 329.63, 392.00, 493.88, 523.25], // Cmaj9
+    [220.00, 261.63, 329.63, 392.00, 440.00], // Am7
+    [174.61, 220.00, 261.63, 329.63, 349.23], // Fmaj7
+    [196.00, 261.63, 293.66, 392.00, 493.88]  // Gsus4 -> G
+  ];
+
+  let chordIndex = 0;
+  let noteIndex = 0;
+
+  function playNextNote() {
+    if (!isMusicPlaying || !audioContext) return;
+
+    const currentChord = progressions[chordIndex];
+    const freq = currentChord[noteIndex];
+
+    playGentleHarpTone(freq);
+
+    noteIndex++;
+    if (noteIndex >= currentChord.length) {
+      noteIndex = 0;
+      chordIndex = (chordIndex + 1) % progressions.length;
+    }
+  }
+
+  // Play every 420ms for gentle soothing acoustic tempo
+  musicInterval = setInterval(playNextNote, 420);
+}
+
+function playGentleHarpTone(freq) {
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  const filter = audioContext.createBiquadFilter();
+
+  // Warm soft sine-triangle timbre
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq, now);
+
+  // Soft low-pass filter for acoustic warmth
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(1400, now);
+  filter.frequency.exponentialRampToValueAtTime(300, now + 1.8);
+
+  // Envelope: Soft attack, gentle natural decay
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(0.08, now + 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.9);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(audioContext.destination);
+
+  osc.start(now);
+  osc.stop(now + 2.0);
 }
 
 // ==========================================
