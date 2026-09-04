@@ -46,13 +46,18 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  position: relative;
+}
+
 body {
   font-family: var(--font-serif-body);
   background-color: var(--ivory);
   color: var(--text);
   line-height: 1.7;
-  overflow-x: hidden;
-  position: relative;
   background-image: 
     radial-gradient(circle at 10% 20%, rgba(215, 181, 106, 0.04) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(184, 138, 53, 0.04) 0%, transparent 40%);
@@ -64,7 +69,7 @@ body.envelope-active {
   height: 100vh;
 }
 
-/* Subtle embossed paper card style */
+/* Symmetrical embossed paper card style */
 .card-stationery {
   background: var(--paper);
   border: 1px solid rgba(215, 181, 106, 0.35);
@@ -74,6 +79,10 @@ body.envelope-active {
     inset 0 0 0 1px rgba(255, 255, 255, 0.8);
   border-radius: 12px;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .card-stationery::before {
@@ -83,6 +92,7 @@ body.envelope-active {
   border: 1px dashed rgba(184, 138, 53, 0.2);
   border-radius: 8px;
   pointer-events: none;
+  box-sizing: border-box;
 }
 
 /* ===================================================
@@ -492,14 +502,14 @@ body.invitation-open .floating-controls {
   transform: translateX(4px);
 }
 
-/* ===================================================
-   MAIN CONTAINER & TYPOGRAPHY
-   =================================================== */
 .invitation-container {
-  max-width: 980px;
+  width: 100%;
+  max-width: 920px;
   margin: 0 auto;
   padding: 40px 18px 80px;
   position: relative;
+  box-sizing: border-box;
+  overflow-x: hidden;
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 1.2s ease 0.3s, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s;
@@ -1167,10 +1177,13 @@ body.invitation-open .invitation-container {
    =================================================== */
 .butterfly-slider-wrap {
   position: relative;
+  width: 100%;
   max-width: 880px;
   margin: 0 auto;
   padding: 10px 0 30px;
   perspective: 1200px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Butterfly Flight Stage */
@@ -1265,6 +1278,7 @@ body.invitation-open .invitation-container {
   box-shadow: 0 10px 30px rgba(74, 67, 59, 0.08);
   transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.65s ease, filter 0.65s ease;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .slide-card.active {
@@ -1409,6 +1423,8 @@ body.invitation-open .invitation-container {
 
 .slider-footer-action {
   margin-top: 18px;
+  display: flex;
+  justify-content: center;
 }
 
 .btn-sm {
@@ -1419,28 +1435,28 @@ body.invitation-open .invitation-container {
 
 @media (max-width: 540px) {
   .slider-stage-3d {
-    height: 450px;
+    height: 440px;
   }
 
   .slide-card {
-    width: 260px;
-    height: 385px;
+    width: 255px;
+    height: 380px;
     padding: 10px;
   }
 
   .slide-arch-frame {
-    height: 305px;
+    height: 300px;
     border-radius: 110px 110px 10px 10px;
   }
 
   .slide-card.prev {
-    transform: translateX(-52%) scale(0.82) rotateY(15deg);
-    opacity: 0.5;
+    transform: translateX(-48%) scale(0.82) rotateY(15deg);
+    opacity: 0.45;
   }
 
   .slide-card.next {
-    transform: translateX(52%) scale(0.82) rotateY(-15deg);
-    opacity: 0.5;
+    transform: translateX(48%) scale(0.82) rotateY(-15deg);
+    opacity: 0.45;
   }
 }
 
@@ -1448,20 +1464,26 @@ body.invitation-open .invitation-container {
 .lightbox-modal {
   position: fixed;
   inset: 0;
-  background: rgba(18, 14, 11, 0.95);
-  backdrop-filter: blur(12px);
-  z-index: 2000;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
+  background: rgba(18, 14, 11, 0.96);
+  backdrop-filter: blur(14px);
+  z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.35s ease, visibility 0.35s;
 }
 
 .lightbox-modal.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .lightbox-content {
@@ -1470,32 +1492,35 @@ body.invitation-open .invitation-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 .lightbox-img {
   max-width: 100%;
-  max-height: 80vh;
+  max-height: 78vh;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(215, 181, 106, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(215, 181, 106, 0.4);
 }
 
 .lightbox-caption {
   font-family: var(--font-sans);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   letter-spacing: 0.18em;
   color: var(--light-gold);
   margin-top: 14px;
+  text-align: center;
 }
 
 .lightbox-btn {
   position: absolute;
-  background: rgba(45, 36, 28, 0.7);
-  border: 1px solid rgba(215, 181, 106, 0.4);
+  background: rgba(45, 36, 28, 0.85);
+  border: 1px solid rgba(215, 181, 106, 0.5);
   color: var(--paper);
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1503,27 +1528,30 @@ body.invitation-open .invitation-container {
   font-size: 1.4rem;
   cursor: pointer;
   transition: var(--transition-fast);
+  z-index: 10;
+  touch-action: manipulation;
 }
 
 .lightbox-btn:hover {
-  background: rgba(74, 67, 59, 0.9);
+  background: rgba(74, 67, 59, 0.95);
   border-color: var(--gold);
+  transform: scale(1.08);
 }
 
 .lightbox-close {
-  top: 24px;
-  right: 24px;
-  font-size: 1.1rem;
+  top: 20px;
+  right: 20px;
+  font-size: 1.2rem;
 }
 
 .lightbox-prev {
-  left: 20px;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
 }
 
 .lightbox-next {
-  right: 20px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -1532,9 +1560,11 @@ body.invitation-open .invitation-container {
    SECTION 9: VENUE / LOCATION
    =================================================== */
 .venue-card {
-  max-width: 580px;
+  width: 100%;
+  max-width: 540px;
   margin: 0 auto;
-  padding: 50px 30px;
+  padding: 48px 26px;
+  box-sizing: border-box;
 }
 
 .venue-header-icon {
@@ -1563,6 +1593,8 @@ body.invitation-open .invitation-container {
   gap: 16px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .meta-pill {
@@ -1574,6 +1606,7 @@ body.invitation-open .invitation-container {
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  box-sizing: border-box;
 }
 
 .pill-lbl {
@@ -1597,6 +1630,8 @@ body.invitation-open .invitation-container {
   gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Buttons */
@@ -1903,6 +1938,79 @@ body.invitation-open .invitation-container {
 /* ===================================================
    RESPONSIVE DESIGN: MOBILE, TABLET, LAPTOP, DESKTOP
    =================================================== */
+
+/* Mobile Phones (<= 580px) - Symmetrical Margins & Spacing */
+@media (max-width: 580px) {
+  html, body {
+    overflow-x: hidden !important;
+  }
+
+  .invitation-container {
+    padding: 24px 14px 70px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .hero-inner,
+  .date-reveal-card,
+  .countdown-card,
+  .message-card,
+  .venue-card,
+  .wishes-card,
+  .closing-card,
+  .detail-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .card-stationery::before {
+    inset: 5px;
+  }
+
+  .floating-controls {
+    top: 14px;
+    right: 14px;
+    gap: 8px;
+  }
+
+  .control-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .venue-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .venue-actions .btn {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .venue-meta-pills {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .meta-pill {
+    width: 100%;
+    max-width: 250px;
+  }
+}
 
 /* Tablet & iPad (>= 640px) */
 @media (min-width: 640px) {

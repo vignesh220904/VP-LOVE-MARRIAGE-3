@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initDateRevealCanvas();
   initCountdown();
   initScrollAnimations();
-  initButterflySlider();
   initGalleryLightbox();
+  initButterflySlider();
   initNavigation();
   initAudioPlayer();
   initWishesForm();
@@ -370,9 +370,8 @@ function initButterflySlider() {
     card.addEventListener("click", () => {
       const cardIndex = parseInt(card.dataset.index, 10);
       if (cardIndex === currentSlideIndex) {
-        // Open fullscreen lightbox if active card is clicked
-        if (typeof openLightboxModal === "function") {
-          openLightboxModal(cardIndex);
+        if (typeof window.openLightboxModal === "function") {
+          window.openLightboxModal(cardIndex);
         }
       } else {
         goToSlide(cardIndex);
@@ -429,11 +428,16 @@ function initButterflySlider() {
   if (nextBtn) nextBtn.addEventListener("click", nextSlide);
 
   if (openLightboxBtn) {
-    openLightboxBtn.addEventListener("click", () => {
-      if (typeof openLightboxModal === "function") {
-        openLightboxModal(currentSlideIndex);
+    const triggerLightbox = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
       }
-    });
+      if (typeof window.openLightboxModal === "function") {
+        window.openLightboxModal(currentSlideIndex);
+      }
+    };
+    openLightboxBtn.addEventListener("click", triggerLightbox);
   }
 
   // Touch & Swipe gestures
@@ -510,7 +514,7 @@ function spawnGoldenButterflies(container, direction = "next") {
 // ==========================================
 // LIGHTBOX MODAL
 // ==========================================
-let openLightboxModal = null;
+window.openLightboxModal = null;
 
 function initGalleryLightbox() {
   const lightbox = document.getElementById("lightbox-modal");
@@ -522,11 +526,21 @@ function initGalleryLightbox() {
 
   if (!lightbox) return;
 
-  const photos = Array.from(document.querySelectorAll(".slide-card img")).map((img, i) => ({
-    src: img.src,
+  const defaultPhotos = [
+    { src: "assets/VP9.png", alt: "Vikki & Pappu - Portrait 1" },
+    { src: "assets/VP10.png", alt: "Vikki & Pappu - Portrait 2" },
+    { src: "assets/VP1.png", alt: "Vikki & Pappu - Portrait 3" },
+    { src: "assets/VP2.png", alt: "Vikki & Pappu - Portrait 4" },
+    { src: "assets/VP3.png", alt: "Vikki & Pappu - Portrait 5" },
+    { src: "assets/VP4.png", alt: "Vikki & Pappu - Portrait 6" }
+  ];
+
+  const domPhotos = Array.from(document.querySelectorAll(".slide-card img")).map((img, i) => ({
+    src: img.getAttribute("src") || img.src,
     alt: img.alt || `Photo ${i + 1}`
   }));
 
+  const photos = domPhotos.length > 0 ? domPhotos : defaultPhotos;
   let lightboxIndex = 0;
 
   function showPhoto(index) {
@@ -534,13 +548,18 @@ function initGalleryLightbox() {
     if (index >= photos.length) index = 0;
     lightboxIndex = index;
 
-    lightboxImg.src = photos[lightboxIndex].src;
-    lightboxImg.alt = photos[lightboxIndex].alt;
-    lightboxCaption.textContent = `Photo ${lightboxIndex + 1} of ${photos.length} • Vikki & Pappu`;
+    if (lightboxImg) {
+      lightboxImg.src = photos[lightboxIndex].src;
+      lightboxImg.alt = photos[lightboxIndex].alt;
+    }
+    if (lightboxCaption) {
+      lightboxCaption.textContent = `Photo ${lightboxIndex + 1} of ${photos.length} • Vikki & Pappu`;
+    }
   }
 
-  openLightboxModal = function(index) {
-    showPhoto(index);
+  window.openLightboxModal = function(index) {
+    const idx = (typeof index === "number" && !isNaN(index)) ? index : 0;
+    showPhoto(idx);
     lightbox.classList.add("active");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -553,11 +572,19 @@ function initGalleryLightbox() {
   }
 
   if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
-  if (prevBtn) prevBtn.addEventListener("click", () => showPhoto(lightboxIndex - 1));
-  if (nextBtn) nextBtn.addEventListener("click", () => showPhoto(lightboxIndex + 1));
+  if (prevBtn) prevBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showPhoto(lightboxIndex - 1);
+  });
+  if (nextBtn) nextBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showPhoto(lightboxIndex + 1);
+  });
 
   lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) closeLightbox();
+    if (e.target === lightbox || e.target.classList.contains("lightbox-content")) {
+      closeLightbox();
+    }
   });
 
   window.addEventListener("keydown", (e) => {
