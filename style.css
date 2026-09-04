@@ -92,8 +92,10 @@ body.envelope-active {
   position: fixed;
   inset: 0;
   width: 100vw;
+  width: 100dvw;
   height: 100vh;
-  background: #181410;
+  height: 100dvh;
+  background: radial-gradient(circle at center, #261f2e 0%, #120e17 100%);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -112,20 +114,36 @@ body.invitation-open .envelope-overlay {
 
 .envelope-stage {
   position: relative;
-  width: 100%;
-  height: 100%;
-  max-width: 500px;
-  max-height: 880px;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   perspective: 1000px;
   transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+}
+
+@media (min-width: 600px) {
+  .envelope-stage {
+    width: 100%;
+    max-width: 440px;
+    height: 88vh;
+    height: 88dvh;
+    max-height: 820px;
+    aspect-ratio: 9/16;
+    border-radius: 16px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(215, 181, 106, 0.3);
+  }
 }
 
 .envelope-static {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,21 +152,22 @@ body.invitation-open .envelope-overlay {
 }
 
 .envelope-img {
-  width: 92%;
-  max-height: 86vh;
-  object-fit: contain;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.45));
-  transition: transform 0.6s ease, filter 0.6s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
 }
 
 .envelope-stage:hover .envelope-img {
   transform: scale(1.015);
-  filter: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.55));
 }
 
 .envelope-video-container {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,10 +177,10 @@ body.invitation-open .envelope-overlay {
 }
 
 .opening-video {
-  width: 92%;
-  max-height: 86vh;
-  object-fit: contain;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* Opening Active States */
@@ -175,36 +194,37 @@ body.opening .envelope-video-container {
 
 body.opening .envelope-prompt {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translate(-50%, 20px);
   pointer-events: none;
 }
 
 body.opening .golden-bloom {
   opacity: 0.85;
-  transform: scale(1.4);
+  transform: translate(-50%, -50%) scale(1.4);
 }
 
 body.opening .envelope-stage {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 /* Wax Seal Hotspot Glow */
 .wax-seal-hotspot {
   position: absolute;
-  top: 49.5%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
+  width: 85px;
+  height: 85px;
   border-radius: 50%;
   pointer-events: none;
+  z-index: 3;
 }
 
 .seal-glow {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(215, 181, 106, 0.6) 0%, rgba(184, 138, 53, 0.2) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(230, 205, 145, 0.6) 0%, rgba(184, 138, 53, 0.25) 55%, transparent 75%);
   animation: sealPulse 2.8s infinite ease-in-out;
 }
 
@@ -214,8 +234,8 @@ body.opening .envelope-stage {
     opacity: 0.5;
   }
   50% {
-    transform: scale(1.25);
-    opacity: 0.9;
+    transform: scale(1.3);
+    opacity: 0.95;
   }
 }
 
@@ -225,8 +245,8 @@ body.opening .envelope-stage {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.6);
-  width: 420px;
-  height: 420px;
+  width: 440px;
+  height: 440px;
   background: radial-gradient(circle, rgba(255, 235, 175, 0.8) 0%, rgba(215, 181, 106, 0.4) 40%, rgba(184, 138, 53, 0.1) 65%, transparent 75%);
   filter: blur(25px);
   opacity: 0;
@@ -239,24 +259,15 @@ body.opening .envelope-stage {
 /* Envelope Instruction Prompt */
 .envelope-prompt {
   position: absolute;
-  bottom: 5vh;
+  bottom: 4vh;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
   z-index: 5;
   transition: opacity 0.5s ease, transform 0.5s ease;
   pointer-events: none;
-}
-
-.prompt-subtitle {
-  font-family: var(--font-serif-primary);
-  font-size: 1.15rem;
-  letter-spacing: 0.15em;
-  color: #EDE3D4;
-  font-style: italic;
 }
 
 .prompt-pill {
@@ -264,19 +275,19 @@ body.opening .envelope-stage {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 24px;
-  background: rgba(30, 24, 18, 0.75);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(215, 181, 106, 0.5);
+  padding: 8px 22px;
+  background: rgba(35, 25, 45, 0.78);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(215, 181, 106, 0.6);
   border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .pulse-ring {
   position: absolute;
   inset: -3px;
   border-radius: 30px;
-  border: 1px solid rgba(215, 181, 106, 0.7);
+  border: 1px solid rgba(215, 181, 106, 0.75);
   animation: ringPulse 2.2s infinite ease-out;
 }
 
